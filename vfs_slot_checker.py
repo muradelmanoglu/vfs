@@ -1,5 +1,6 @@
 import time
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
+from playwright_stealth import stealth_sync
 from twilio.rest import Client
 from datetime import datetime
 import os
@@ -249,13 +250,8 @@ def check_slot() -> bool:
             locale="en-US",
             timezone_id="Asia/Baku",
         )
-        # navigator.webdriver = false — bot aşkarlanmasının qarşısını al
-        context.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
-            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-        """)
         page = context.new_page()
+        stealth_sync(page)
         page.on("console",   lambda m: log(f"🖥️  [{m.type}] {m.text}"))
         page.on("pageerror", lambda e: log(f"🖥️  Brauzer xətası: {e}"))
 
