@@ -230,9 +230,32 @@ def check_slot() -> bool:
     with sync_playwright() as p:
         browser = p.chromium.launch(
             headless=True,
-            args=["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+            args=[
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-blink-features=AutomationControlled",
+                "--disable-infobars",
+                "--window-size=1920,1080",
+            ]
         )
-        page = browser.new_page()
+        context = browser.new_context(
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/124.0.0.0 Safari/537.36"
+            ),
+            viewport={"width": 1920, "height": 1080},
+            locale="en-US",
+            timezone_id="Asia/Baku",
+        )
+        # navigator.webdriver = false — bot aşkarlanmasının qarşısını al
+        context.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+            Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
+            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+        """)
+        page = context.new_page()
         page.on("console",   lambda m: log(f"🖥️  [{m.type}] {m.text}"))
         page.on("pageerror", lambda e: log(f"🖥️  Brauzer xətası: {e}"))
 
@@ -320,6 +343,7 @@ def check_slot() -> bool:
             log(traceback.format_exc())
             return False
         finally:
+            context.close()
             browser.close()
             log("🔒 Brauzer bağlandı")
 
