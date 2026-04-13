@@ -1,3 +1,2 @@
 twilio
 playwright
-playwright-stealth

@@ -1,6 +1,5 @@
 import time
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeoutError
-from playwright_stealth import stealth_sync
 from twilio.rest import Client
 from datetime import datetime
 import os
@@ -251,7 +250,6 @@ def check_slot() -> bool:
             timezone_id="Asia/Baku",
         )
         page = context.new_page()
-        stealth_sync(page)
         page.on("console",   lambda m: log(f"🖥️  [{m.type}] {m.text}"))
         page.on("pageerror", lambda e: log(f"🖥️  Brauzer xətası: {e}"))
 
