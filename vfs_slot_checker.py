@@ -59,7 +59,7 @@ def do_login(page) -> bool:
     try:
         log(f"🔐 Login səhifəsi açılır: {LOGIN_URL}")
         page.goto(LOGIN_URL, wait_until="domcontentloaded", timeout=60000)
-        page.wait_for_load_state("networkidle", timeout=30000)
+        page.wait_for_load_state("load", timeout=30000)
         time.sleep(2)
         log(f"📄 Səhifə: {page.title()} | URL: {page.url}")
 
@@ -149,7 +149,7 @@ def do_login(page) -> bool:
         submit_btn.click()
         log("✅ Login düyməsinə basıldı, gözlənilir...")
         time.sleep(3)
-        page.wait_for_load_state("networkidle", timeout=30000)
+        page.wait_for_load_state("load", timeout=30000)
 
         log(f"📄 Login sonrası URL: {page.url}")
         log(f"📄 Login sonrası başlıq: {page.title()}")
@@ -268,7 +268,7 @@ def check_slot() -> bool:
             # 2. Application Detail (Start Booking)
             log(f"🌐 Booking səhifəsi açılır: {BOOKING_URL}")
             page.goto(BOOKING_URL, wait_until="domcontentloaded", timeout=60000)
-            page.wait_for_load_state("networkidle", timeout=30000)
+            page.wait_for_load_state("load", timeout=30000)
             time.sleep(2)
             log(f"📄 URL: {page.url} | Başlıq: {page.title()}")
 
@@ -292,7 +292,7 @@ def check_slot() -> bool:
             if start_btn.count() > 0:
                 start_btn.first.click()
                 log("✅ 'Start Booking' düyməsinə basıldı")
-                page.wait_for_load_state("networkidle", timeout=30000)
+                page.wait_for_load_state("load", timeout=30000)
                 time.sleep(2)
                 log(f"📄 Start Booking sonrası URL: {page.url}")
             else:
